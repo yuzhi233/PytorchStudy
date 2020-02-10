@@ -35,9 +35,9 @@ loss_axis =[0]
 for i in range(len(epoch_n)):#对于不同的迭代次数的最终loss
     
     for epoch in range(epoch_n[i]):
-        
+        #正向传播
         h1 =torch.mm(x,w1)#将x，与w1做矩阵乘法得到h1 隐藏层矩阵  h1 应该是100*100
-        h1 =h1.clamp(min =0) #将h1矩阵中小于0的变为0 
+        h1 =h1.clamp(min =0) #将h1矩阵中小于0的变为0 #相当于RELU了有那意思
         y_pred =torch.mm(h1,w2)#计算出我们100个样本预测的值 100*10
         #print(y_pred.size())
         loss =(y_pred-y).pow(2).sum()#计算这100个样本的loss
