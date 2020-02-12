@@ -4,7 +4,9 @@ Created on Mon Feb 10 14:40:31 2020
 
 @author: zhoubo
 """
+#简易神经网络再改进 
 
+#针对参数矩阵的生成，损失函数计算，权值更新  改进
 import torch
 from torch.autograd import Variable
 
@@ -49,8 +51,8 @@ for epoch in range(epoch_n):
     if epoch%1000 ==0:
         print('Epoch:{},Loss:{:.4f}'.format(epoch,loss.data))
     
-    model.zero_grad()
-    loss.backward()
+    models.zero_grad()#将这轮梯度值先置为0
+    loss.backward()#反向传播计算梯度
 
-    for param in models.parameters():
+    for param in models.parameters():#参数更新
         param.data -= param.grad.data*learning_rate
