@@ -56,7 +56,7 @@ data_test = datasets.MNIST(root= './data/',transform =transform,train =False)
 data_loader_train = torch.utils.data.DataLoader(dataset =data_train,
                                                 batch_size =64,
                                                 shuffle =True)
-data_loader_test = torch.utils.data.DataLoader(dataset =data_train,
+data_loader_test = torch.utils.data.DataLoader(dataset =data_test,
                                                batch_size =64,
                                                 shuffle =True)
 
@@ -128,45 +128,67 @@ for epoch in range(epoch_n):
         outputs = model(X_train)
         _,pred =torch.max(outputs.data,1)#返回的pred每一行是最大值元素的索引 结果是64行10列
         
-        loss =cost_function(outputs,y_train)
         optimizer.zero_grad()
-      
-        
+        loss =cost_function(outputs,y_train)
+       
+
         loss.backward()
         optimizer.step()
         
-        running_loss += loss.data
+        running_loss += loss.item()
         running_correct += torch.sum(pred ==y_train.data)
         
     testing_correct =0
     for data in data_loader_test:
         X_test,y_test =data
-        X_test,y_test =Variable(X_test),Variable(y_test)
-            
+        
         X_test =X_test.to(device)
         y_test =y_test.to(device)
+        
+        X_test,y_test =Variable(X_test),Variable(y_test)
+            
+        
             
         outputs =model(X_test)
         _,pred = torch.max(outputs,1)#返回的pred每一行是最大值元素的索引
         
         testing_correct += torch.sum(pred == y_test.data)
-        
-    print("Loss is :{:.4f},Train Accuracy is:{:.4f}%,Test Accuracy is:{:.4f}".format(running_loss/len(data_train),100*running_correct/len(data_train),100*testing_correct/len(data_test)))
+    print(len(data_train))    
+    print(len(data_test))
+    print("Loss is :{:.4f},Train Accuracy is:{:.4f}%,Test Accuracy is:{:.4f}".format(running_loss/len(data_train),
+                                                                                     100*running_correct/len(data_train),
+                                                                                     100*testing_correct/len(data_test)))
 
 
 
 
+#训练完成后需要验证
 
+# 随机选取一部分测试集中的图片， 用训练好的模型进行预测，看看和真实值有多大的偏差，
+# 并对结果进行可视化。
 
+#从测试集装载4张图片 打乱
+data_loader_test = torch.utils.data.DataLoader(dataset=data_test,
+                                               batch_size = 4,
+                                               shuffle = True)
+X_test ,y_test =next(iter(data_loader_test))
 
+inputs =Variable(X_test)
+inputs =inputs.to(device)
+pred = model(inputs)
+_,pred = torch.max(pred,1)
 
+print ( ' Predict Label is:\n ', [i for i in pred.data])
+print ( ' Real Label is :\n' , [i for i in y_test])
 
+img =torchvision.utils.make_grid(X_test)
+img =img.numpy().transpose(1,2,0)
 
+std =[0.5,0.5,0.5]
+mean =[0.5,0.5,0.5]
+img =img*std+mean
 
-
-
-
-
+plt.imshow(img)
 
 
 
