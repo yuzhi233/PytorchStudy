@@ -6,6 +6,7 @@ import random
 import torchvision
 import torchvision.transforms as transforms
 import sys
+from torch import nn
 #这个包是敲代码过程中收集的    也是书上写的
 
 
@@ -82,11 +83,11 @@ def load_data_fashion_mnist(batch_size):
 
 
 
-#类似的定义net在数据集的准确率
+#定义net在数据集的准确率   主要是传入测试集
 def evaluate_accuracy(data_iter,net):
     acc_sum, n =0.0,0
     for X,y in data_iter:
-        acc_sum+=(net(X).argmax(dim =1) == y).float().sum.item()
+        acc_sum+=(net(X).argmax(dim =1) == y).float().sum().item()
         n += y.shape[0]#记录总数量 这里一个批次是256个
     return acc_sum/n
     
@@ -128,7 +129,13 @@ def train_ch3(net,train_iter,test_iter,loss,num_epochs,batch_size,params =None,l
     
     
     
-    
+ # 对x的形状转换的这个功能自定义一个FlattenLayer并记录在d2lzh_pytorch中方便后面使用。
+# 本函数已保存在d2lzh_pytorch包中方便以后使用
+class FlattenLayer(nn.Module):
+    def __init__(self):
+        super(FlattenLayer, self).__init__()
+    def forward(self, x): # x shape: (batch, *, *, ...)
+        return x.view(x.shape[0], -1)
     
     
     
