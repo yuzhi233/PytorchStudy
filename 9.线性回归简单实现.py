@@ -79,7 +79,7 @@ net = nn.Sequential(
 
 # 可以通过net.parameters()来查看模型所有的可学习参数，此函数将返回一个生成器。
 for param in net.parameters():#查看我们构造层后他自己生成的参数 （权值矩阵，偏差什么的）
-    print(param)
+    print('net.param:\n',param)
 
 
 

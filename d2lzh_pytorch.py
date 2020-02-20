@@ -118,11 +118,12 @@ def train_ch3(net,train_iter,test_iter,loss,num_epochs,batch_size,params =None,l
             else:
                 optimizer.step()#定义了优化算法就step自动更新
                 
-            train_l_sum += l.item()#每一批次样本计算完记录下loss 这里的loss是训练集的loss
+                
+            train_l_sum += l.item()#每一批次样本计算完记录下loss 这里的loss是训练集的loss  l是tensor类型 ,item()是转成python number
             
-            train_acc_sum +=(y_hat.argmax(dim=1) == y).sum().item()#累加每轮训练正确的个数
+            train_acc_sum +=(y_hat.argmax(dim=1) == y).sum().item()# 计算每个批次y_hat中预测正确的个数并累加
             
-            n+=y.shape[0]#shape的结果是一个批次中样本的个数也就是batchsize
+            n+=y.shape[0]#shape的结果是一个批次中样本的个数也就是batchsize #shape是torch.size[256]，加上索引才能把值拿出来
         
         test_acc =evaluate_accuracy(test_iter,net)
         print('epoch{},loss{:.4f},train acc{:.3f},test acc{:.3f}'.format(epoch+1,train_l_sum/n,train_acc_sum/n,test_acc))    
