@@ -114,7 +114,7 @@ def train_ch3(net,train_iter,test_iter,loss,num_epochs,batch_size,params =None,l
             
             #参数更新
             if optimizer is None:#如果没有自己定义优化算法
-                d2l.sgd(params,lr,batch_size)#更新参数就按小批量梯度下降的方法更新参数
+                sgd(params,lr,batch_size)#更新参数就按小批量梯度下降的方法更新参数
             else:
                 optimizer.step()#定义了优化算法就step自动更新
                 
