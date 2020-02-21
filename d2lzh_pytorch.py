@@ -141,6 +141,17 @@ class FlattenLayer(nn.Module):
     
     
     
-    
+# 本函数已保存在d2lzh_pytorch包中方便以后使用
+        #画图 y轴是对数尺度的
+def semilogy(x_vals, y_vals, x_label, y_label, x2_vals=None, y2_vals=None,
+             legend=None, figsize=(3.5, 2.5)):
+    d2l.set_figsize(figsize)
+    d2l.plt.xlabel(x_label)
+    d2l.plt.ylabel(y_label)
+    d2l.plt.semilogy(x_vals, y_vals)
+    if x2_vals and y2_vals:
+        d2l.plt.semilogy(x2_vals, y2_vals, linestyle=':')
+        d2l.plt.legend(legend)
+
     
     
