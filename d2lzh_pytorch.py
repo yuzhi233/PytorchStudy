@@ -96,17 +96,49 @@ def load_data_fashion_mnist(batch_size):
 
 
 
-#定义net在数据集的准确率   主要是传入测试集
-def evaluate_accuracy(data_iter,net):
-    acc_sum, n =0.0,0
-    for X,y in data_iter:
-        acc_sum+=(net(X).argmax(dim =1) == y).float().sum().item()
-        n += y.shape[0]#记录总数量 这里一个批次是256个
-    return acc_sum/n
+#定义net在数据集的准确率   主要是传入测试集  已经被下面升级版的测试集评估函数取代👇
+# def evaluate_accuracy(data_iter,net):
+#     acc_sum, n =0.0,0
+#     for X,y in data_iter:
+#         acc_sum+=(net(X).argmax(dim =1) == y).float().sum().item()
+#         n += y.shape[0]#记录总数量 这里一个批次是256个
+#     return acc_sum/n
+    
+
+#我们在对（测试集）模型评估的时候不应该进行dropout，所以我们修改一下d2lzh_pytorch中的evaluate_accuracy函数:
+# 本函数已保存在d2lzh_pytorch  注意：如果net是通过sequetical创建 下面方法会报错 用上面的👆
+def evaluate_accuracy(data_iter, net):#用于评估测试集准确率 目的是要实现评估的时候要自动关闭dropout net是序列容器生成的会报错用上面那个
+    acc_sum, n = 0.0, 0
+    for X, y in data_iter:#从data_iter取出一个batch的X，y
+         #先判断你这个net是怎么产生的是你自己手写的还是利用pytorch快速生成的
+        if isinstance(net, torch.nn.Module):#判断net是不是用torch.nn.Module创建的实例
+            net.eval() # #如果是上面方法创建的 那么开启评估模式 dropout层全部关闭
+            acc_sum += (net(X).argmax(dim=1) == y).float().sum().item()#判断正确的个数
+            net.train() # 改回训练模式
+        else: # 如果是我们自定义的模型
+            if('is_training' in net.__code__.co_varnames): # 如果有is_training这个参数
+                # 将is_training设置成False
+                acc_sum += (net(X, is_training=False).argmax(dim=1) == y).float().sum().item() #先将is_training设置成 False 关闭dropout
+            else:#(形参)没有is_training这个参数
+                acc_sum += (net(X).argmax(dim=1) == y).float().sum().item() 
+        n += y.shape[0]#其实就是算了以下一个批次有多少样本 每次循环累加一下参加计算的样本数
+    return acc_sum / n#在所有批次循环后  计算准确率 拿 准确的个数/总个数
+
+            
+            
+
     
     
-    
-#模型训练并计算准确率   
+#模型训练并计算准确率
+#参数1 :传入的是我们定义的net
+#参数2 :传入的训练集数据生成器
+#参数3 :传入的测试集数据生成器
+#参数4：传入定义的损失函数是哪一种
+#参数5 :传入一个batch大小
+#参数6 :总共遍历几次全样本
+#参数7 :传入参数 列表形式[w1,b1..]
+#参数8 :学习率
+#参数9 :优化器
 def train_ch3(net,train_iter,test_iter,loss,num_epochs,batch_size,params =None,lr=None,optimizer=None):
     
     for epoch in range(num_epochs):
