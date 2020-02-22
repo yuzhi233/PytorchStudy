@@ -51,7 +51,7 @@ params=[W1,b1,W2,b2,W3,b3]
 
 #定义模型
 
-drop_prob1,drop_porb2= 0.2,0.5#分别设置每个层的丢弃概率
+drop_prob1,drop_prob2= 0.2,0.5#分别设置每个层的丢弃概率
 
 def net(X,is_training=True):#默认是dropout
     X =X.view(-1,num_inputs)#对传入的样本矩阵先view以下确保传入的特征数相匹配
@@ -63,7 +63,7 @@ def net(X,is_training=True):#默认是dropout
     H2 =(torch.matmul(H1,W2)+b2).relu()
     
     if is_training:
-        H2 = dropout(H2, drop_porb2)  # 在第二层全连接后添加丢弃层
+        H2 = dropout(H2, drop_prob2)  # 在第二层全连接后添加丢弃层
         
     return torch.matmul(H2,W3)+b3
 
@@ -90,7 +90,27 @@ d2l.train_ch3(net,train_iter,test_iter,loss,num_epochs,batch_size,params,lr)
 # 参数7 :传入参数 列表形式[w1,b1..]
 # 参数8 :学习率
 
+#==============================dropout 简洁实现=====================================
+
+#定义模型：
+net =nn.Sequential(d2l.Flatten(),
+                   nn.Linear(num_inputs,num_hiddens1),
+                   nn.ReLU(),
+                   nn.Dropout(drop_prob1),
+                   nn.Linear(num_hiddens1,num_hiddens2),
+                   nn.ReLU(),
+                   nn.Dropout(drop_prob2),
+                   nn.Linear(num_hiddens2,num_outputs)
+                  )
+
+#权值初始化
+for param in net.parameters():
+    nn.init.normal_(param,mean=0,std=1)#所有参数都初始化成均值为0 标准差1
 
 
+#定义优化器
+optimizer =torch.optim.SGD(net.parameters(),lr =0.5)
+
+dl2.train_ch3(net,train_iter,test_iter,loss,num_epochs,batch_size,params=None,lr=None,optimizer)
 
 
