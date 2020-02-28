@@ -17,19 +17,19 @@ from torch import nn
 
 #储存一个tensor
 x=torch.ones(3)
-torch.save(x,'x.pt')#储存 
-x2 =torch.load('x.pt')#读取
+torch.save(x,'D://SPYDER_CODE//PytorchStudy//保存的模型或参数(没啥用)//x.pt')#储存 
+x2 =torch.load('D://SPYDER_CODE//PytorchStudy//保存的模型或参数(没啥用)//x.pt')#读取
 print(x2)
 
 #可以储存一个tensor 列表 并读回内存
 y= torch.zeros(4)
-torch.save([x,y],'xy.pt')
-xy_list = torch.load('xy.pt')
+torch.save([x,y],'D://SPYDER_CODE//PytorchStudy//保存的模型或参数(没啥用)//xy.pt')
+xy_list = torch.load('D://SPYDER_CODE//PytorchStudy//保存的模型或参数(没啥用)//xy.pt')
 print(xy_list)
 
 # 存储并读取一个从字符串映射到Tensor的字典
-torch.save({'x': x, 'y': y}, 'xy_dict.pt')
-xy = torch.load('xy_dict.pt')
+torch.save({'x': x, 'y': y}, 'D://SPYDER_CODE//PytorchStudy//保存的模型或参数(没啥用)//xy_dict.pt')
+xy = torch.load('D://SPYDER_CODE//PytorchStudy//保存的模型或参数(没啥用)//xy_dict.pt')
 print(xy)
 
 
@@ -75,7 +75,7 @@ print('*'*100)
 
 #1.保存
 
-torch.save(net.state_dict(),'./net_justmodelparams.pt')  ##保存整个模型参数  推荐的文件后缀名是pt或pth
+torch.save(net.state_dict(),'D://SPYDER_CODE//PytorchStudy//保存的模型或参数(没啥用)//net_justmodelparams.pt')  ##保存整个模型参数  推荐的文件后缀名是pt或pth
 
 #2.加载模型参数
 #先构造出架构-----------------你重新搭建的框架 名字得跟之前模型的一致才能读取！！！大坑
@@ -87,7 +87,7 @@ net2 =nn.Sequential(OrderedDict([   ('hidden',torch.nn.Linear(3,2)),
 print(net2)
 print('net没载入之前的模型参数:\n',list(net2.parameters()))
 #再传参
-net2.load_state_dict(torch.load('./net_justmodelparams.pt'))#加载
+net2.load_state_dict(torch.load('D://SPYDER_CODE//PytorchStudy//保存的模型或参数(没啥用)//net_justmodelparams.pt'))#加载
 print('net载入之后的模型参数:\n',list(net2.parameters()))
 
 X=torch.ones(1,3)
@@ -97,10 +97,10 @@ print('net2计算结果:\n',net2(X))#成功!
 #--------------------------------二.保存和加载整个模型---------------------------------------
 
 # 1.保存
-torch.save(net,'./net_wholeparams.pt')
+torch.save(net,'D://SPYDER_CODE//PytorchStudy//保存的模型或参数(没啥用)//net_wholeparams.pt')
 
 # 2.加载
-net3 =torch.load('./net_wholeparams.pt')
+net3 =torch.load('D://SPYDER_CODE//PytorchStudy//保存的模型或参数(没啥用)//net_wholeparams.pt')
 print('加载整个模型的net3:\n',net3)
 print('net3计算结果:\n',net3(X))
 
