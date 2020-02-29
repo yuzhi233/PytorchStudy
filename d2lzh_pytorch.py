@@ -197,5 +197,12 @@ def semilogy(x_vals, y_vals, x_label, y_label, x2_vals=None, y2_vals=None,legend
         plt.semilogy(x2_vals, y2_vals, linestyle=':')
         plt.legend(legend)
 
-    
-    
+#函数作用:输入图像张量的二维数组 和卷积核大小 返回二维数组与卷积核 进行卷积后的图像张量数组   
+def corr2d(X,K):#X---需要进行卷积的二维数组   K------卷积核张量数组
+    h,w =K.shape
+    Y = torch.zeros((X.shape[0]-h+1,X.shape[1]-w+1))#初始化y  Y是卷积后的二维tensor  这里步长应该默认是1 padding =0
+    for i in range(Y.shape[0]):#遍历Y每个元素 (填经过卷积后的值)
+        for j in range(Y.shape[1]):
+            Y[i,j]=(X[i:i+h,j:j+w]*K).sum()#截取了一小块做卷积 这里*K 是广播运算 对于元素相乘 算出了一次卷积的的结果
+            
+    return Y    
