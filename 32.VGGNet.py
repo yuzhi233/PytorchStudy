@@ -64,7 +64,8 @@ def vgg(conv_arch,fc_features,fc_hidden_units=4096):
         nn.Linear(fc_hidden_units,fc_hidden_units),
         nn.ReLU(),
         nn.Dropout(0.5),
-        nn.Linear(fc_hidden_units,10)
+        nn.Linear(fc_hidden_units,10),
+        nn.Softmax(dim =1)
 
         ))
     return net
@@ -101,7 +102,7 @@ net= vgg(small_conv_arch,fc_features//ratio,fc_hidden_units//ratio)
 
 print(net)
 
-batch_size = 64
+batch_size = 1
 # 如出现“out of memory”的报错信息，可减小batch_size或resize
 train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size, resize=224)
 
